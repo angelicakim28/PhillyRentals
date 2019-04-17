@@ -5,7 +5,7 @@ var map = new mapboxgl.Map({
     style: 'mapbox://styles/mapbox/dark-v10',
     //style: 'mapbox://styles/mapbox/light-v10',
     center: [-75.1652,39.9526],
-    zoom: 12
+    zoom: 11
 });
 
 
@@ -86,7 +86,9 @@ map.on('load', function() {
     // location of the feature, with description HTML from its properties.
     map.on('click', 'unclustered-point', function (e) {
            var coordinates = e.features[0].geometry.coordinates.slice();
-           var description = e.features[0].properties.classProbs;
+           var description = e.features[0].properties.MAPNAME;
+           description += "<br>Risk Score: " + e.features[0].properties.classProbs;
+
 
            // Ensure that if the map is zoomed out such that multiple copies of the feature are visible,
            // the popup appears over the copy being pointed to.
@@ -172,8 +174,11 @@ map.on('load', function() {
     //
     // Here we're using d3 to help us make the ajax request but you can use
     // Any request method (library or otherwise) you wish.
+
+    //https://docs.mapbox.com/mapbox-gl-js/assets/significant-earthquakes-2015.geojson
     d3.json('https://docs.mapbox.com/mapbox-gl-js/assets/significant-earthquakes-2015.geojson', function(err, data) {
         if (err) throw err;
+
 
         // Create a month property value based on time
         // used to filter against.
