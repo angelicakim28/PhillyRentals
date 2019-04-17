@@ -21,9 +21,10 @@ var colors = ['#fed976', '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c'];
 
 map.on('load', function () {
     // add a clustered GeoJSON source for a sample set of earthquakes
-    map.addSource('earthquakes', {
-        "type": "geojson",
-        "data": "https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson",
+    map.addSource('illegalRentals', {
+        "type": "json",
+        "data":"https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/phillyrentals_viol_clean.json",
+        //"data": "https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson",
         "cluster": true,
         "clusterRadius": 80,
         "clusterProperties": { // keep separate counts for each magnitude category in a cluster
