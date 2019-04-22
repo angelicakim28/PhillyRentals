@@ -6,7 +6,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
-
+    <!--link href='https://raw.githubusercontent.com/seiyria/bootstrap-slider/master/dist/css/bootstrap-slider.css' rel='stylesheet' /-->
 
 
     <!-- CSS Imports -->
@@ -17,20 +17,34 @@
     <div id='map'></div>
     <div class='map-overlay top'>
         <div class='map-overlay-inner'>
-            <h2>Illegal Rental Risk Score</h2>
-            <label id='month'></label>
-            <input id='slider' type='range' min='0' max='11' step='1' value='0' />
-        </div>
-        <div class='map-overlay-inner'>
+            <h2>Illegal Rental Relative Risk Score</h2>
+
+            <label id='score'></label>
+            <input id='slider1' type='range' min='0' max='1' step='0.1' value='0' />
             <div id='legend' class='legend'>
                 <div class='bar'></div>
-                <div>Low &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; High</div>
+                <div><span class="right">100%</span><span class="left">1%</span></div>
+                <hr style="height:5px; visibility:hidden;" />
+
+
             </div>
+        </div>
+
+        <div class='map-overlay-inner2'>
+            <h2>Last Inspection Date</h2>
+            <label id='inspdate'></label>
+            <input id='slider2' type='range' min='0' max='100' step='1' value='0' />
+            <div><span class="right">12-2018</span><span class="left">01-2005</span></div>
+            <hr style="height:5px; visibility:hidden;" />
+
+
+
         </div>
     </div>
 
     <!-- Javascript Imports -->
     <script src="rentals1.js"></script>
+    <!--script src='https://raw.githubusercontent.com/seiyria/bootstrap-slider/master/dist/bootstrap-slider.js'></script-->
     <!--script src='//d3js.org/d3.v3.min.js' charset='utf-8'></script-->
 
 

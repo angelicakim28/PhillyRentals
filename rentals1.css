@@ -20,6 +20,14 @@ body { margin:0; padding:0; }
     margin-bottom: 10px;
 }
 
+.map-overlay-inner2 {
+    background-color: #fff;
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
 .map-overlay h2 {
     line-height: 24px;
     display: block;
@@ -29,7 +37,7 @@ body { margin:0; padding:0; }
 .map-overlay .legend .bar {
     height: 10px;
     width: 100%;
-    background: linear-gradient(90deg, #440154, #482475, #414487, #355f8d, #2a788e, #21908d, #22a884, #42be71, #7ad151, #bddf26, #bddf26);
+    background: linear-gradient(90deg, #f9e5f9, #c59ec4,#ac669a,#70577b,#483466);
 }
 
 .map-overlay input {
@@ -39,4 +47,12 @@ body { margin:0; padding:0; }
     position: relative;
     margin: 0;
     cursor: ew-resize;
+}
+
+.right{
+    float:right;
+}
+
+.left{
+    float:left;
 }
