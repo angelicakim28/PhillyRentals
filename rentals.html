@@ -8,7 +8,6 @@
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
     <!--link href='https://raw.githubusercontent.com/seiyria/bootstrap-slider/master/dist/css/bootstrap-slider.css' rel='stylesheet' /-->
 
-
     <!-- CSS Imports -->
     <link rel="stylesheet" href="rentals1.css" />
 
@@ -20,7 +19,7 @@
             <h2>Illegal Rental Relative Risk Score</h2>
 
             <label id='score'></label>
-            <input id='slider1' type='range' min='0' max='1' step='0.1' value='0' />
+            <input id='slider1' type='range' min='0' max='100' step='1' value='0' />
             <div id='legend' class='legend'>
                 <div class='bar'></div>
                 <div><span class="right">100%</span><span class="left">1%</span></div>
@@ -30,12 +29,22 @@
             </div>
         </div>
 
+
         <div class='map-overlay-inner2'>
             <h2>Last Inspection Date</h2>
+
+            <form action="/action_page.php">
+              Select all units prior to selected date:
+              <input id='dateselection' type="date" name="insp_date">
+              <input id='filterdate-button' type="submit" value="Filter">
+            </form>
+
+
             <label id='inspdate'></label>
-            <input id='slider2' type='range' min='0' max='100' step='1' value='0' />
+
+            <!-- input id='slider2' type='range' min='01-2000' max='12-2018' value='0' />
             <div><span class="right">12-2018</span><span class="left">01-2005</span></div>
-            <hr style="height:5px; visibility:hidden;" />
+            <hr style="height:5px; visibility:hidden;" /-->
 
 
 
@@ -44,6 +53,10 @@
 
     <!-- Javascript Imports -->
     <script src="rentals1.js"></script>
+
+    <!-- Slider JS Imports -->
+
+
     <!--script src='https://raw.githubusercontent.com/seiyria/bootstrap-slider/master/dist/bootstrap-slider.js'></script-->
     <!--script src='//d3js.org/d3.v3.min.js' charset='utf-8'></script-->
 

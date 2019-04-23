@@ -141,20 +141,64 @@ var colors = ['#f9e5f9', '#c59ec4', '#ac669a', '#70577b', '#483466'];
 
 
 // Relative Risk Score Slider
-var riskvalues = [0.2, 0.3, 0.4, 0.5];
-
 function filterBy(score) {
 
-    var filters = [">=", "classProbs", score];
+    var filters = [">=", "classProbs", score/100];
     map.setFilter('unclustered-point', filters);
   }
 
 // Set filter to first all risk scores greater than 0.2
-//filterBy(0.2);
+filterBy(0.0);
 
   document.getElementById('slider1').addEventListener('input', function(e) {
       filterBy(e.target.value);
   });
+
+
+
+// Inspection Date Slider (2)
+function filterByDate(datadate) {
+
+    var filters2 = [">=", "date", datadate];
+    map.setFilter('unclustered-point', filters2);
+  }
+
+// Set filter to first all risk scores greater than 0.2
+//filterBy(0.0);
+
+  document.getElementById('dateselection').addEventListener('input', function(e) {
+      filterByDate(e.target.value);
+  });
+
+// //more code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // // Last Inspection Date Slider
+  // function filterByDate(date) {
+  //
+  //     var filters = [">=", "lastInspDate", date];
+  //     map.setFilter('unclustered-point', filters);
+  //   }
+  //
+  // // Set filter to first all risk scores greater than 0.2
+  // filterBy(0.0);
+  //
+  //   document.getElementById('slider2').addEventListener('input', function(e) {
+  //       filterByDate(e.target.value);
+  //   });
 
 
 });
