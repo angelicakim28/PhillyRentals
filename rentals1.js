@@ -20,7 +20,7 @@ map.on('load', function() {
     map.addSource("illegalRentals", {
         type: "geojson",
         // Point to GeoJSON data. Violations Model Example (kim 04/17)
-        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample.geojson",
+        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample2.geojson",
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
         clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
@@ -115,6 +115,8 @@ var colors = ['#f9e5f9', '#c59ec4', '#ac669a', '#70577b', '#483466'];
            description += "<br>History of Violations: " + e.features[0].properties.other_violations2;
            description += "<br>Active Case: " + e.features[0].properties.active_case_y;
            description += "<br>Total Area: " + e.features[0].properties.total_area_copy;
+           description += "<br>Last Inspection Date: " + e.features[0].properties.testdate;
+
 
            //add other elements/ fix into scrollable menu
 
@@ -159,8 +161,17 @@ filterBy(0.0);
 // Inspection Date Slider (2)
 function filterByDate(datadate) {
 
-    var filters2 = [">=", "date", datadate];
-    map.setFilter('unclustered-point', filters2);
+
+    //var d = new Date(datadate);
+    //const filteredDates = alldates.filter(d - new Date() > 0);
+
+    //var filters2 = ["<=", "testdate", datadate];
+    //map.setFilter('unclustered-point', filteredDates);
+
+    map.setFilter(function(v) {
+      return v.properties.testdate =='2010-09-07';
+    });
+
   }
 
 // Set filter to first all risk scores greater than 0.2
