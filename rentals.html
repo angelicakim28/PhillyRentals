@@ -14,42 +14,42 @@
 </head>
 <body>
     <div id='map'></div>
+
     <div class='map-overlay top'>
         <div class='map-overlay-inner'>
             <h2>Illegal Rental Relative Risk Score</h2>
-
             <label id='score'></label>
             <input id='slider1' type='range' min='0' max='100' step='1' value='0' />
             <div id='legend' class='legend'>
                 <div class='bar'></div>
                 <div><span class="right">100%</span><span class="left">1%</span></div>
                 <hr style="height:5px; visibility:hidden;" />
-
-
             </div>
         </div>
 
+<!-- Time Slider -->
+      <div class='map-overlay-inner2'>
+        <div class='session' id='sliderbar'>
+          <h2>Last Inspection Year:</h2><h3>(Selects all units prior to selected date)</h3>
+          Year: <label id='idyear'>2018</label>
+          <input id='slider2' class='row' type='range' min='2005' max='2018' step='1' value='2018' />
+          Month: <label id='idmonth'>12</label>
+          <input id='slider3' class='row' type='range' min='1' max='12' step='1' value='12' />
+        </div>
 
-        <div class='map-overlay-inner2'>
+
+        <!--div class='map-overlay-inner2'>
             <h2>Last Inspection Date</h2>
-
-            <form action="/action_page.php">
               Select all units prior to selected date:
               <input id='dateselection' type="date" name="insp_date">
-              <!--input id='filterdate-button' type="submit" value="Filter"-->
-            </form>
-
-
-            <label id='inspdate'></label>
+              <input id='filterdate-button' type="button" value="Filter"-->
 
             <!-- input id='slider2' type='range' min='01-2000' max='12-2018' value='0' />
             <div><span class="right">12-2018</span><span class="left">01-2005</span></div>
             <hr style="height:5px; visibility:hidden;" /-->
 
-
-
-        </div>
     </div>
+  </div>
 
     <!-- Javascript Imports -->
     <script src="rentals1.js"></script>

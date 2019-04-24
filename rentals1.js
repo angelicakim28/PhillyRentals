@@ -4,13 +4,13 @@ var map = new mapboxgl.Map({
     container: 'map',
     //style: 'mapbox://styles/mapbox/dark-v10',
     style: 'mapbox://styles/mapbox/light-v10',
-    center: [-75.1652,39.9526],
-    zoom: 11
+    //center: [-75.1652,39.9526],
+    center: [-75.194147, 39.934481],
+    zoom: 13
 });
 
 
-//Slider
-//https://seiyria.com/bootstrap-slider/#example-18
+
 
 //Clusters
 
@@ -20,55 +20,55 @@ map.on('load', function() {
     map.addSource("illegalRentals", {
         type: "geojson",
         // Point to GeoJSON data. Violations Model Example (kim 04/17)
-        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample2.geojson",
-        cluster: true,
-        clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample3.geojson",
+        //cluster: true,
+        //clusterMaxZoom: 14, // Max zoom to cluster points on
+        //clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
     });
 
-    map.addLayer({
-        id: "clusters",
-        type: "circle",
-        source: "illegalRentals",
-        filter: ["has", "point_count"],
-        paint: {
-            // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-            // with three steps to implement three types of circles:
-            //   * Blue, 20px circles when point count is less than 100
-            //   * Yellow, 30px circles when point count is between 100 and 750
-            //   * Pink, 40px circles when point count is greater than or equal to 750
-            "circle-color": [
-                "step",
-                ["get", "point_count"],
-                "#51bbd6",
-                100,
-                "#f1f075",
-                750,
-                "#f28cb1"
-            ],
-            "circle-radius": [
-                "step",
-                ["get", "point_count"],
-                20,
-                100,
-                30,
-                750,
-                40
-            ]
-        }
-    });
-
-    map.addLayer({
-        id: "cluster-count",
-        type: "symbol",
-        source: "illegalRentals",
-        filter: ["has", "point_count"],
-        layout: {
-            "text-field": "{point_count_abbreviated}",
-            "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-            "text-size": 12
-        }
-    });
+    // map.addLayer({
+    //     id: "clusters",
+    //     type: "circle",
+    //     source: "illegalRentals",
+    //     filter: ["has", "point_count"],
+    //     paint: {
+    //         // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
+    //         // with three steps to implement three types of circles:
+    //         //   * Blue, 20px circles when point count is less than 100
+    //         //   * Yellow, 30px circles when point count is between 100 and 750
+    //         //   * Pink, 40px circles when point count is greater than or equal to 750
+    //         "circle-color": [
+    //             "step",
+    //             ["get", "point_count"],
+    //             "#51bbd6",
+    //             100,
+    //             "#f1f075",
+    //             750,
+    //             "#f28cb1"
+    //         ],
+    //         "circle-radius": [
+    //             "step",
+    //             ["get", "point_count"],
+    //             20,
+    //             100,
+    //             30,
+    //             750,
+    //             40
+    //         ]
+    //     }
+    // });
+    //
+    // map.addLayer({
+    //     id: "cluster-count",
+    //     type: "symbol",
+    //     source: "illegalRentals",
+    //     filter: ["has", "point_count"],
+    //     layout: {
+    //         "text-field": "{point_count_abbreviated}",
+    //         "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+    //         "text-size": 12
+    //     }
+    // });
 
 
 //color points using data-driven circle colors
@@ -83,11 +83,16 @@ var risk5 = [">=", ["get", "classProbs"], 0.5];
 // colors to use for the categories
 var colors = ['#f9e5f9', '#c59ec4', '#ac669a', '#70577b', '#483466'];
 
+//opening page - placeholders
+var filter_year = ['<=', "year", 3000];
+var filter_month = ['<=', "month", 13];
+var filter_score = [">=", "classProbs", -1];
+
     map.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'illegalRentals',
-        filter: ["!", ["has", "point_count"]],
+        filter: ['all', filter_year, filter_month, filter_score],
         paint: {
             // color circles by year_built_copy, using a match expression
             "circle-color": ["case",
@@ -97,7 +102,7 @@ var colors = ['#f9e5f9', '#c59ec4', '#ac669a', '#70577b', '#483466'];
                 risk4, colors[3],
                 risk5, colors[4], "#0B6623"
             ],
-            "circle-radius": 6,
+            "circle-radius": 4,
             "circle-stroke-width": 1,
              "circle-stroke-color": "#fff"
         }
@@ -141,75 +146,66 @@ var colors = ['#f9e5f9', '#c59ec4', '#ac669a', '#70577b', '#483466'];
 
 
 
-
 // Relative Risk Score Slider
 function filterBy(score) {
-
-    var filters = [">=", "classProbs", score/100];
-    map.setFilter('unclustered-point', filters);
+    filter_score = [">=", "classProbs", score/100];
+    map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
   }
 
 // Set filter to first all risk scores greater than 0.2
 filterBy(0.0);
-
-  document.getElementById('slider1').addEventListener('input', function(e) {
-      filterBy(e.target.value);
-  });
-
-
-
-// Inspection Date Slider (2)
-function filterByDate(datadate) {
-
-
-    //var d = new Date(datadate);
-    //const filteredDates = alldates.filter(d - new Date() > 0);
-
-    //var filters2 = ["<=", "testdate", datadate];
-    //map.setFilter('unclustered-point', filteredDates);
-
-    map.setFilter(function(v) {
-      return v.properties.testdate =='2010-09-07';
-    });
-
-  }
-
-// Set filter to first all risk scores greater than 0.2
-//filterBy(0.0);
-
-  document.getElementById('dateselection').addEventListener('input', function(e) {
-      filterByDate(e.target.value);
-  });
-
-// //more code
+document.getElementById('slider1').addEventListener('input', function(e) {
+    filterBy(e.target.value);
+});
 
 
 
+// Inspection Date Slider (https://docs.mapbox.com/help/tutorials/show-changes-over-time/)
+
+//Year Slider
+document.getElementById('slider2').addEventListener('input', function(e) {
+  var year = parseInt(e.target.value);
+  // update the map
+  filter_year = ['<=', "year", year];
+  map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
+
+  console.log(filter_year);
+  // update text in the UI
+  document.getElementById('idyear').innerText = year;
+});
+
+
+//Month Slider-Combined
+document.getElementById('slider3').addEventListener('input', function(e) {
+  var month = parseInt(e.target.value);
+  // update the map
+  filter_month = ['<=', "month", month];
+  map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
+
+  console.log(filter_month);
+  // update text in the UI
+  document.getElementById('idmonth').innerText = month;
+});
 
 
 
-
-
-
-
-
-
-
-
-
-  // // Last Inspection Date Slider
-  // function filterByDate(date) {
-  //
-  //     var filters = [">=", "lastInspDate", date];
-  //     map.setFilter('unclustered-point', filters);
-  //   }
-  //
-  // // Set filter to first all risk scores greater than 0.2
-  // filterBy(0.0);
-  //
-  //   document.getElementById('slider2').addEventListener('input', function(e) {
-  //       filterByDate(e.target.value);
-  //   });
+// // Inspection Date Filter (CALENDAR)
+// function filterByDate(datadate) {
+//
+//     console.log(datadate);
+//
+//     var filter_year = ["<=", "year", parseInt(datadate.substring(0,4))];
+//     var filter_month = ["<=", "month", parseInt(datadate.substring(5,7))];
+//     var filter_day = ["<=", "day", parseInt(datadate.substring(8,10))];
+//
+//     console.log(parseInt(datadate.substring(1,4)),parseInt(datadate.substring(5,7)));
+//
+//     map.setFilter('unclustered-point', ["all", filter_year, filter_month, filter_day]);
+//   }
+//
+//   document.getElementById('filterdate-button').addEventListener('click', function() {
+//       filterByDate(document.getElementById('dateselection').value);
+//   });
 
 
 });
