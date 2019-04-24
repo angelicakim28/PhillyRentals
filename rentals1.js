@@ -5,7 +5,8 @@ var map = new mapboxgl.Map({
     //style: 'mapbox://styles/mapbox/dark-v10',
     style: 'mapbox://styles/mapbox/light-v10',
     //center: [-75.1652,39.9526],
-    center: [-75.194147, 39.934481],
+    center: [-75.160328, 39.934481],
+
     zoom: 13
 });
 
@@ -104,7 +105,8 @@ var filter_score = [">=", "classProbs", -1];
             ],
             "circle-radius": 4,
             "circle-stroke-width": 1,
-             "circle-stroke-color": "#fff"
+            "circle-stroke-color": "#fff"
+            //"circle-opacity":0.3
         }
     });
 
