@@ -5,9 +5,9 @@ var map = new mapboxgl.Map({
     //style: 'mapbox://styles/mapbox/dark-v10',
     style: 'mapbox://styles/mapbox/light-v10',
     //center: [-75.1652,39.9526],
-    center: [-75.160328, 39.934481],
+    center: [-75.190328, 39.934581],
 
-    zoom: 13
+    zoom: 14
 });
 
 
@@ -20,26 +20,47 @@ map.on('load', function() {
     map.addSource("illegalRentals", {
         type: "geojson",
         // Point to GeoJSON data. Violations Model Example (kim 04/17)
-        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample3.geojson",
+        ////data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample3.geojson",
+        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/graysferry3.geojson"
     });
 
 
 //color points using data-driven circle colors
 
-// filters for classifying classProbs into five categories based on risk score
-var risk1 = ["<", ["get", "classProbs"], 0.2];
-var risk2 = ["all", [">=", ["get", "classProbs"], 0.2], ["<", ["get", "classProbs"], 0.3]];
-var risk3 = ["all", [">=", ["get", "classProbs"], 0.3], ["<", ["get", "classProbs"], 0.4]];
-var risk4 = ["all", [">=", ["get", "classProbs"], 0.4], ["<", ["get", "classProbs"], 0.5]];
-var risk5 = [">=", ["get", "classProbs"], 0.5];
+// filters for classifying risk_score into five categories based on risk score
+//var risk0 = ["<", ["get", "risk_score"], 0.1];
+var risk0 = ["all", [">=", ["get", "risk_score"], -2], ["<", ["get", "risk_score"], 0.1]];
+
+var risk1 = ["all", [">=", ["get", "risk_score"], 0.1], ["<", ["get", "risk_score"], 0.2]];
+var risk2 = ["all", [">=", ["get", "risk_score"], 0.2], ["<", ["get", "risk_score"], 0.3]];
+var risk3 = ["all", [">=", ["get", "risk_score"], 0.3], ["<", ["get", "risk_score"], 0.4]];
+var risk4 = ["all", [">=", ["get", "risk_score"], 0.4], ["<", ["get", "risk_score"], 0.5]];
+var risk5 = [">=", ["get", "risk_score"], 0.5];
 
 // colors to use for the categories
-var colors = ['#F9B4BA', '#F56BA1' , '#C32389', '#790D76', '#480968'];
+var colors = ['#F9B4BA', '#F790AE', '#F56BA1' , '#C32389', '#790D76', '#480968'];
+
+
+// var risk0 = ["<", ["get", "risk_score"], 0.1];
+// var risk1 = ["all", [">=", ["get", "risk_score"], 0.1], ["<", ["get", "risk_score"], 0.2]];
+// var risk2 = ["all", [">=", ["get", "risk_score"], 0.2], ["<", ["get", "risk_score"], 0.3]];
+// var risk3 = ["all", [">=", ["get", "risk_score"], 0.3], ["<", ["get", "risk_score"], 0.4]];
+// var risk4 = ["all", [">=", ["get", "risk_score"], 0.4], ["<", ["get", "risk_score"], 0.5]];
+// var risk5 = ["all", [">=", ["get", "risk_score"], 0.5], ["<", ["get", "risk_score"], 0.6]];
+// var risk6 = ["all", [">=", ["get", "risk_score"], 0.6], ["<", ["get", "risk_score"], 0.7]];
+// var risk7 = ["all", [">=", ["get", "risk_score"], 0.7], ["<", ["get", "risk_score"], 0.8]];
+// var risk8 = ["all", [">=", ["get", "risk_score"], 0.8], ["<", ["get", "risk_score"], 0.9]];
+// var risk9 = [">=", ["get", "risk_score"], 0.9];
+// // colors to use for the categories
+// var colors = ['#F9B4BA', '#F790AE', '#F67EA8', '#F56BA1', '#DC4795', '#C32389', '#9E1880', '#790D76', '#610B6F', '#480968'];
+
+
+
 
 //opening page - placeholders
-var filter_year = ['<=', "year", 3000];
-var filter_month = ['<=', "month", 13];
-var filter_score = [">=", "classProbs", -1];
+var filter_year = ['<=', "year2", 3000];
+var filter_month = ['<=', "month2", 13];
+var filter_score = [">=", "risk_score", -1];
 
 
     map.addLayer({
@@ -50,11 +71,12 @@ var filter_score = [">=", "classProbs", -1];
         paint: {
             // color circles by year_built_copy, using a match expression
             "circle-color": ["case",
-                risk1, colors[0],
-                risk2, colors[1],
-                risk3, colors[2],
-                risk4, colors[3],
-                risk5, colors[4], "#0B6623"
+                risk0, colors[0],
+                risk1, colors[1],
+                risk2, colors[2],
+                risk3, colors[3],
+                risk4, colors[4],
+                risk5, colors[5],"#0B6623"
             ],
             "circle-radius": 4,
             "circle-stroke-width": 1,
@@ -72,14 +94,14 @@ var filter_score = [">=", "classProbs", -1];
     // location of the feature, with description HTML from its properties.
     map.on('click', 'unclustered-point', function (e) {
            var coordinates = e.features[0].geometry.coordinates.slice();
-           var description = e.features[0].properties.MAPNAME;
-           description += "<br>Relative Risk Score: " + e.features[0].properties.classProbs;
-           description += "<br>Time Since Last License: " + e.features[0].properties.timesincelast_lic;
-           description += "<br>Offsite Landlord: " + e.features[0].properties.offsite_landlord;
-           description += "<br>History of Violations: " + e.features[0].properties.other_violations2;
-           description += "<br>Active Case: " + e.features[0].properties.active_case_y;
-           description += "<br>Total Area: " + e.features[0].properties.total_area_copy;
-           description += "<br>Last Inspection Date: " + e.features[0].properties.testdate;
+           var description = "<b>OPA Account:</b> " + e.features[0].properties.parcel_number;
+           description += "<br><b>Relative Risk Score:</b> " + e.features[0].properties.risk_score;
+           description += "<br><b>Time Since Last License:</b> " + e.features[0].properties.timesincelast_lic;
+           description += "<br><b>Offsite Landlord:</b> " + e.features[0].properties.landlord_status;
+           description += "<br><b>Count of Past Violations:</b> " + e.features[0].properties.other_violations2;
+           //description += "<br>Active Case: " + e.features[0].properties.active_case_y;
+           description += "<br><b>Total Area:</b> " + e.features[0].properties.total_area;
+           description += "<br><b>History of Violations:</b> " + e.features[0].properties.hist_violations;
 
 
            //add other elements/ fix into scrollable menu
@@ -107,7 +129,7 @@ var filter_score = [">=", "classProbs", -1];
 
 // Relative Risk Score Slider
 function filterBy(score) {
-    filter_score = [">=", "classProbs", score/100];
+    filter_score = [">=", "risk_score", score/100];
     map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
   }
 
@@ -125,7 +147,7 @@ document.getElementById('slider1').addEventListener('input', function(e) {
 document.getElementById('slider2').addEventListener('input', function(e) {
   var year = parseInt(e.target.value);
   // update the map
-  filter_year = ['<=', "year", year];
+  filter_year = ['<=', "year2", year];
   map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
 
   console.log(filter_year);
@@ -138,7 +160,7 @@ document.getElementById('slider2').addEventListener('input', function(e) {
 document.getElementById('slider3').addEventListener('input', function(e) {
   var month = parseInt(e.target.value);
   // update the map
-  filter_month = ['<=', "month", month];
+  filter_month = ['<=', "month2", month];
   map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
 
   console.log(filter_month);
@@ -151,7 +173,7 @@ map.on('moveend', function(e) {
     var features = map.queryRenderedFeatures({layers:['unclustered-point']});
 
     if (features) {
-        var uniqueFeatures = getUniqueFeatures(features, "classProbs");
+        var uniqueFeatures = getUniqueFeatures(features, "risk_score");
         // Populate features for the listing overlay.
         renderListings(uniqueFeatures);
 
@@ -163,11 +185,11 @@ map.on('moveend', function(e) {
         airports = uniqueFeatures;
 
         // Create array of probabilities
-        probsArr = airports.map(function(element) {
-          return element.properties.classProbs;
+        risk_scoreArr = airports.map(function(element) {
+          return element.properties.risk_score;
         });
 
-        var x = probsArr;
+        var x = risk_scoreArr;
 
         var trace = {
           x: x,
@@ -183,22 +205,6 @@ map.on('moveend', function(e) {
           },
         };
 
-        // var trace_thresholdline = {
-        //   type:'line',
-        //   x0: 0.65,
-        //   y0: 0,
-        //   x1: 0.65,
-        //   y1: 2,
-        //   line: {
-        //     color:"rgba(72,9,104, 0.8)",
-        //     width:0.1,
-        //   },
-        //   xbins:{
-        //     start: 0,
-        //     end: 1,
-        //     size: 0.01
-        //   },
-        // };
 
         var data = [trace];
         //var data = [trace, trace_thresholdline];
@@ -243,8 +249,8 @@ filterEl.addEventListener('keyup', function(e) {
 
     // Filter visible features that don't match the input value.
     var filtered = airports.filter(function(feature) {
-        var name = normalize(feature.properties.classProbs);
-        var code = normalize(feature.properties.classProbs);
+        var name = normalize(feature.properties.risk_score);
+        var code = normalize(feature.properties.risk_score);
 
         return name.indexOf(value) > -1 || code.indexOf(value) > -1;
     });
@@ -253,8 +259,8 @@ filterEl.addEventListener('keyup', function(e) {
     renderListings(filtered);
 
     // Set the filter to populate features into the layer.
-    map.setFilter('unclustered-point', ['match', ['get', 'classProbs'], filtered.map(function(feature) {
-        return feature.properties.classProbs;
+    map.setFilter('unclustered-point', ['match', ['get', 'risk_score'], filtered.map(function(feature) {
+        return feature.properties.risk_score;
     }), true, false]);
 });
 
@@ -263,54 +269,8 @@ filterEl.addEventListener('keyup', function(e) {
 renderListings([]);
 
 
-// // Histogram
-//       var x1 = [];
-//       var x2 = [];
-//       var y1 = [];
-//       var y2 = [];
-//       for (var i = 1; i < 500; i++)
-//       {
-//       	k=Math.random();
-//       	x1.push(k*5);
-//       	x2.push(k*10);
-//       	y1.push(k);
-//       	y2.push(k*2);
-//       }
-//       var trace1 = {
-//         x: x1,
-//         y: y1,
-//         name: 'control',
-//         autobinx: false,
-//         histnorm: "count",
-//         marker: {
-//           color: "rgba(195, 35, 137, 0.7)",
-//           line: {
-//             color:  "rgba(121, 13, 118, 1)",
-//             width: 1
-//           }
-//         },
-//         opacity: 0.5,
-//         type: "histogram",
-//         xbins: {
-//           end: 2.8,
-//           size: 0.06,
-//           start: 0.5
-//         }
-//       };
-//
-//       var data = [trace1];
-//       var layout = {
-//         bargap: 0.05,
-//         bargroupgap: 0.2,
-//         barmode: "overlay",
-//         title: "Relative Risk Score Distribution",
-//         xaxis: {title: "Risk Score Value"},
-//         yaxis: {title: "Count/Frequency"}
-//       };
-//       Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
-
-
-
+//changed geojson file
+//changed risk_score to risk_score
 
 
 
