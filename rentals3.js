@@ -35,26 +35,15 @@ var risk1 = ["all", [">=", ["get", "risk_score"], 0.1], ["<", ["get", "risk_scor
 var risk2 = ["all", [">=", ["get", "risk_score"], 0.2], ["<", ["get", "risk_score"], 0.3]];
 var risk3 = ["all", [">=", ["get", "risk_score"], 0.3], ["<", ["get", "risk_score"], 0.4]];
 var risk4 = ["all", [">=", ["get", "risk_score"], 0.4], ["<", ["get", "risk_score"], 0.5]];
-var risk5 = [">=", ["get", "risk_score"], 0.5];
+var risk5 = ["all", [">=", ["get", "risk_score"], 0.5], ["<", ["get", "risk_score"], 0.6]];
+var risk6 = ["all", [">=", ["get", "risk_score"], 0.6], ["<", ["get", "risk_score"], 0.7]];
+var risk7 = ["all", [">=", ["get", "risk_score"], 0.7], ["<", ["get", "risk_score"], 0.8]];
+var risk8 = ["all", [">=", ["get", "risk_score"], 0.8], ["<", ["get", "risk_score"], 0.9]];
+
+var risk9 = [">=", ["get", "risk_score"], 0.9];
 
 // colors to use for the categories
-var colors = ['#F9B4BA', '#F790AE', '#F56BA1' , '#C32389', '#790D76', '#480968'];
-
-
-// var risk0 = ["<", ["get", "risk_score"], 0.1];
-// var risk1 = ["all", [">=", ["get", "risk_score"], 0.1], ["<", ["get", "risk_score"], 0.2]];
-// var risk2 = ["all", [">=", ["get", "risk_score"], 0.2], ["<", ["get", "risk_score"], 0.3]];
-// var risk3 = ["all", [">=", ["get", "risk_score"], 0.3], ["<", ["get", "risk_score"], 0.4]];
-// var risk4 = ["all", [">=", ["get", "risk_score"], 0.4], ["<", ["get", "risk_score"], 0.5]];
-// var risk5 = ["all", [">=", ["get", "risk_score"], 0.5], ["<", ["get", "risk_score"], 0.6]];
-// var risk6 = ["all", [">=", ["get", "risk_score"], 0.6], ["<", ["get", "risk_score"], 0.7]];
-// var risk7 = ["all", [">=", ["get", "risk_score"], 0.7], ["<", ["get", "risk_score"], 0.8]];
-// var risk8 = ["all", [">=", ["get", "risk_score"], 0.8], ["<", ["get", "risk_score"], 0.9]];
-// var risk9 = [">=", ["get", "risk_score"], 0.9];
-// // colors to use for the categories
-// var colors = ['#F9B4BA', '#F790AE', '#F67EA8', '#F56BA1', '#DC4795', '#C32389', '#9E1880', '#790D76', '#610B6F', '#480968'];
-
-
+var colors = ['#F9B4BA', '#F790AE', '#F67EA8', '#F56BA1', '#DC4795', '#C32389', '#9E1880','#790D76','#610B6F','#480968'];
 
 
 //opening page - placeholders
@@ -76,7 +65,11 @@ var filter_score = [">=", "risk_score", -1];
                 risk2, colors[2],
                 risk3, colors[3],
                 risk4, colors[4],
-                risk5, colors[5],"#0B6623"
+                risk5, colors[5],
+                risk6, colors[6],
+                risk7, colors[7],
+                risk8, colors[8],
+                risk9, colors[9], "#0B6623"
             ],
             "circle-radius": 4,
             "circle-stroke-width": 1,
