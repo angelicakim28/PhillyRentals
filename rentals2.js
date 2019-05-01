@@ -17,59 +17,11 @@ var map = new mapboxgl.Map({
 
 map.on('load', function() {
     // Add a new source from our GeoJSON data and set the
-    // 'cluster' option to true. GL-JS will add the point_count property to your source data.
     map.addSource("illegalRentals", {
         type: "geojson",
         // Point to GeoJSON data. Violations Model Example (kim 04/17)
         data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample3.geojson",
-        //cluster: true,
-        //clusterMaxZoom: 14, // Max zoom to cluster points on
-        //clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
     });
-
-    // map.addLayer({
-    //     id: "clusters",
-    //     type: "circle",
-    //     source: "illegalRentals",
-    //     filter: ["has", "point_count"],
-    //     paint: {
-    //         // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-    //         // with three steps to implement three types of circles:
-    //         //   * Blue, 20px circles when point count is less than 100
-    //         //   * Yellow, 30px circles when point count is between 100 and 750
-    //         //   * Pink, 40px circles when point count is greater than or equal to 750
-    //         "circle-color": [
-    //             "step",
-    //             ["get", "point_count"],
-    //             "#51bbd6",
-    //             100,
-    //             "#f1f075",
-    //             750,
-    //             "#f28cb1"
-    //         ],
-    //         "circle-radius": [
-    //             "step",
-    //             ["get", "point_count"],
-    //             20,
-    //             100,
-    //             30,
-    //             750,
-    //             40
-    //         ]
-    //     }
-    // });
-    //
-    // map.addLayer({
-    //     id: "cluster-count",
-    //     type: "symbol",
-    //     source: "illegalRentals",
-    //     filter: ["has", "point_count"],
-    //     layout: {
-    //         "text-field": "{point_count_abbreviated}",
-    //         "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-    //         "text-size": 12
-    //     }
-    // });
 
 
 //color points using data-driven circle colors
@@ -88,6 +40,7 @@ var colors = ['#F9B4BA', '#F56BA1' , '#C32389', '#790D76', '#480968'];
 var filter_year = ['<=', "year", 3000];
 var filter_month = ['<=', "month", 13];
 var filter_score = [">=", "classProbs", -1];
+
 
     map.addLayer({
         id: 'unclustered-point',
@@ -109,6 +62,10 @@ var filter_score = [">=", "classProbs", -1];
             //"circle-opacity":0.3
         }
     });
+
+
+
+
 
     // inspect a unit (unclustered-point) on click
     // When a click event occurs on a feature in the unclustered-point layer, open a popup at the
@@ -190,71 +147,184 @@ document.getElementById('slider3').addEventListener('input', function(e) {
 });
 
 
+map.on('moveend', function(e) {
+    var features = map.queryRenderedFeatures({layers:['unclustered-point']});
 
-// // Inspection Date Filter (CALENDAR)
-// function filterByDate(datadate) {
-//
-//     console.log(datadate);
-//
-//     var filter_year = ["<=", "year", parseInt(datadate.substring(0,4))];
-//     var filter_month = ["<=", "month", parseInt(datadate.substring(5,7))];
-//     var filter_day = ["<=", "day", parseInt(datadate.substring(8,10))];
-//
-//     console.log(parseInt(datadate.substring(1,4)),parseInt(datadate.substring(5,7)));
-//
-//     map.setFilter('unclustered-point', ["all", filter_year, filter_month, filter_day]);
-//   }
-//
-//   document.getElementById('filterdate-button').addEventListener('click', function() {
-//       filterByDate(document.getElementById('dateselection').value);
-//   });
+    if (features) {
+        var uniqueFeatures = getUniqueFeatures(features, "classProbs");
+        // Populate features for the listing overlay.
+        renderListings(uniqueFeatures);
+
+        // Clear the input container
+        filterEl.value = '';
+
+        // Store the current features in sn `airports` variable to
+        // later use for filtering on `keyup`.
+        airports = uniqueFeatures;
+
+        // Create array of probabilities
+        probsArr = airports.map(function(element) {
+          return element.properties.classProbs;
+        });
+
+        var x = probsArr;
+
+        var trace = {
+          x: x,
+          type: 'histogram',
+          marker: {
+            color: "rgba(255, 100, 102, 0.7)",
+          },
+          opacity: 0.5,
+          xbins: {
+            start: 0,
+            end: 1,
+            size: 0.05
+          },
+        };
+
+        // var trace_thresholdline = {
+        //   type:'line',
+        //   x0: 0.65,
+        //   y0: 0,
+        //   x1: 0.65,
+        //   y1: 2,
+        //   line: {
+        //     color:"rgba(72,9,104, 0.8)",
+        //     width:0.1,
+        //   },
+        //   xbins:{
+        //     start: 0,
+        //     end: 1,
+        //     size: 0.01
+        //   },
+        // };
+
+        var data = [trace];
+        //var data = [trace, trace_thresholdline];
+
+        var layout = {
+          barmode: "overlay",
+          xaxis: {title: "Score"},
+          yaxis: {title: "Count"},
+          showlegend: false,
+          shapes: [
+               {
+                   type: 'line',
+                   xref: 'paper',
+                   x0: 0.65,
+                   y0: 0,
+                   x1: 0.65,
+                   y1: 10, // myDiv.layout.yaxis.range[1],
+                   line:{
+                       color: 'rgba(72,9,104, 0.8)',
+                       width: 1,
+                       dash:'dot'
+                   }
+                 }
+               ]
+        };
+        //Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+        var myplot = Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+            myplot.then(function(plot) {
+              var layout_update = { 'shapes[0].y1': plot.layout.yaxis.range[1] };
+              Plotly.update('myDiv', {}, layout_update);
+              //console.log(plot.layout.yaxis.range[1]);
+            });
+            myplot;
 
 
-// Histogram
-      var x1 = [];
-      var x2 = [];
-      var y1 = [];
-      var y2 = [];
-      for (var i = 1; i < 500; i++)
-      {
-      	k=Math.random();
-      	x1.push(k*5);
-      	x2.push(k*10);
-      	y1.push(k);
-      	y2.push(k*2);
-      }
-      var trace1 = {
-        x: x1,
-        y: y1,
-        name: 'control',
-        autobinx: false,
-        histnorm: "count",
-        marker: {
-          color: "rgba(195, 35, 137, 0.7)",
-          line: {
-            color:  "rgba(121, 13, 118, 1)",
-            width: 1
-          }
-        },
-        opacity: 0.5,
-        type: "histogram",
-        xbins: {
-          end: 2.8,
-          size: 0.06,
-          start: 0.5
-        }
-      };
+    }
+});
 
-      var data = [trace1];
-      var layout = {
-        bargap: 0.05,
-        bargroupgap: 0.2,
-        barmode: "overlay",
-        title: "Relative Risk Score Distribution",
-        xaxis: {title: "Risk Score Value"},
-        yaxis: {title: "Count/Frequency"}
-      };
-      Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+
+filterEl.addEventListener('keyup', function(e) {
+    var value = normalize(e.target.value);
+
+    // Filter visible features that don't match the input value.
+    var filtered = airports.filter(function(feature) {
+        var name = normalize(feature.properties.classProbs);
+        var code = normalize(feature.properties.classProbs);
+
+        return name.indexOf(value) > -1 || code.indexOf(value) > -1;
+    });
+
+    // Populate the sidebar with filtered results
+    renderListings(filtered);
+
+    // Set the filter to populate features into the layer.
+    map.setFilter('unclustered-point', ['match', ['get', 'classProbs'], filtered.map(function(feature) {
+        return feature.properties.classProbs;
+    }), true, false]);
+});
+
+// Call this function on initialization
+// passing an empty array to render an empty state
+renderListings([]);
+
+
+// // Histogram
+//       var x1 = [];
+//       var x2 = [];
+//       var y1 = [];
+//       var y2 = [];
+//       for (var i = 1; i < 500; i++)
+//       {
+//       	k=Math.random();
+//       	x1.push(k*5);
+//       	x2.push(k*10);
+//       	y1.push(k);
+//       	y2.push(k*2);
+//       }
+//       var trace1 = {
+//         x: x1,
+//         y: y1,
+//         name: 'control',
+//         autobinx: false,
+//         histnorm: "count",
+//         marker: {
+//           color: "rgba(195, 35, 137, 0.7)",
+//           line: {
+//             color:  "rgba(121, 13, 118, 1)",
+//             width: 1
+//           }
+//         },
+//         opacity: 0.5,
+//         type: "histogram",
+//         xbins: {
+//           end: 2.8,
+//           size: 0.06,
+//           start: 0.5
+//         }
+//       };
+//
+//       var data = [trace1];
+//       var layout = {
+//         bargap: 0.05,
+//         bargroupgap: 0.2,
+//         barmode: "overlay",
+//         title: "Relative Risk Score Distribution",
+//         xaxis: {title: "Risk Score Value"},
+//         yaxis: {title: "Count/Frequency"}
+//       };
+//       Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
