@@ -19,19 +19,19 @@ map.on('load', function() {
     // Add a new source from our GeoJSON data and set the
     map.addSource("illegalRentals", {
         type: "geojson",
-        // Point to GeoJSON data. Violations Model Example (kim 04/17)
-        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/violations_sample3.geojson",
+        // Point to GeoJSON data. Grays Ferry for app (05/01)
+        data: "https://raw.githubusercontent.com/angelicakim28/PhillyRentals/master/graysferry_forapp.geojson",
     });
 
 
 //color points using data-driven circle colors
 
-// filters for classifying classProbs into five categories based on risk score
-var risk1 = ["<", ["get", "classProbs"], 0.2];
-var risk2 = ["all", [">=", ["get", "classProbs"], 0.2], ["<", ["get", "classProbs"], 0.3]];
-var risk3 = ["all", [">=", ["get", "classProbs"], 0.3], ["<", ["get", "classProbs"], 0.4]];
-var risk4 = ["all", [">=", ["get", "classProbs"], 0.4], ["<", ["get", "classProbs"], 0.5]];
-var risk5 = [">=", ["get", "classProbs"], 0.5];
+// filters for classifying risk_score into five categories based on risk score
+var risk1 = ["<", ["get", "risk_score"], 0.2];
+var risk2 = ["all", [">=", ["get", "risk_score"], 0.2], ["<", ["get", "risk_score"], 0.3]];
+var risk3 = ["all", [">=", ["get", "risk_score"], 0.3], ["<", ["get", "risk_score"], 0.4]];
+var risk4 = ["all", [">=", ["get", "risk_score"], 0.4], ["<", ["get", "risk_score"], 0.5]];
+var risk5 = [">=", ["get", "risk_score"], 0.5];
 
 // colors to use for the categories
 var colors = ['#F9B4BA', '#F56BA1' , '#C32389', '#790D76', '#480968'];
@@ -39,7 +39,7 @@ var colors = ['#F9B4BA', '#F56BA1' , '#C32389', '#790D76', '#480968'];
 //opening page - placeholders
 var filter_year = ['<=', "year", 3000];
 var filter_month = ['<=', "month", 13];
-var filter_score = [">=", "classProbs", -1];
+var filter_score = [">=", "risk_score", -1];
 
 
     map.addLayer({
@@ -73,7 +73,7 @@ var filter_score = [">=", "classProbs", -1];
     map.on('click', 'unclustered-point', function (e) {
            var coordinates = e.features[0].geometry.coordinates.slice();
            var description = e.features[0].properties.MAPNAME;
-           description += "<br>Relative Risk Score: " + e.features[0].properties.classProbs;
+           description += "<br>Relative Risk Score: " + e.features[0].properties.risk_score;
            description += "<br>Time Since Last License: " + e.features[0].properties.timesincelast_lic;
            description += "<br>Offsite Landlord: " + e.features[0].properties.offsite_landlord;
            description += "<br>History of Violations: " + e.features[0].properties.other_violations2;
@@ -107,7 +107,7 @@ var filter_score = [">=", "classProbs", -1];
 
 // Relative Risk Score Slider
 function filterBy(score) {
-    filter_score = [">=", "classProbs", score/100];
+    filter_score = [">=", "risk_score", score/100];
     map.setFilter('unclustered-point', ['all', filter_year, filter_month, filter_score]);
   }
 
@@ -151,7 +151,7 @@ map.on('moveend', function(e) {
     var features = map.queryRenderedFeatures({layers:['unclustered-point']});
 
     if (features) {
-        var uniqueFeatures = getUniqueFeatures(features, "classProbs");
+        var uniqueFeatures = getUniqueFeatures(features, "risk_score");
         // Populate features for the listing overlay.
         renderListings(uniqueFeatures);
 
@@ -164,7 +164,7 @@ map.on('moveend', function(e) {
 
         // Create array of probabilities
         probsArr = airports.map(function(element) {
-          return element.properties.classProbs;
+          return element.properties.risk_score;
         });
 
         var x = probsArr;
@@ -243,8 +243,8 @@ filterEl.addEventListener('keyup', function(e) {
 
     // Filter visible features that don't match the input value.
     var filtered = airports.filter(function(feature) {
-        var name = normalize(feature.properties.classProbs);
-        var code = normalize(feature.properties.classProbs);
+        var name = normalize(feature.properties.risk_score);
+        var code = normalize(feature.properties.risk_score);
 
         return name.indexOf(value) > -1 || code.indexOf(value) > -1;
     });
@@ -253,8 +253,8 @@ filterEl.addEventListener('keyup', function(e) {
     renderListings(filtered);
 
     // Set the filter to populate features into the layer.
-    map.setFilter('unclustered-point', ['match', ['get', 'classProbs'], filtered.map(function(feature) {
-        return feature.properties.classProbs;
+    map.setFilter('unclustered-point', ['match', ['get', 'risk_score'], filtered.map(function(feature) {
+        return feature.properties.risk_score;
     }), true, false]);
 });
 
