@@ -1,6 +1,6 @@
 body { margin:0; padding:0; }
 #map { position:absolute;;
-       top:56px;
+       top:56px !important;
        bottom:0;
        width:75%;
        left: 25%;

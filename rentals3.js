@@ -4,9 +4,7 @@ var map = new mapboxgl.Map({
     container: 'map',
     //style: 'mapbox://styles/mapbox/dark-v10',
     style: 'mapbox://styles/mapbox/light-v10',
-    //center: [-75.1652,39.9526],
-    center: [-75.190328, 39.934581],
-
+    center: [-75.190328, 39.933001],
     zoom: 14
 });
 
@@ -130,6 +128,7 @@ function filterBy(score) {
 filterBy(0.0);
 document.getElementById('slider1').addEventListener('input', function(e) {
     filterBy(e.target.value);
+    renderHistogram();
 });
 
 
@@ -146,6 +145,7 @@ document.getElementById('slider2').addEventListener('input', function(e) {
   console.log(filter_year);
   // update text in the UI
   document.getElementById('idyear').innerText = year;
+  renderHistogram();
 });
 
 
@@ -159,83 +159,89 @@ document.getElementById('slider3').addEventListener('input', function(e) {
   console.log(filter_month);
   // update text in the UI
   document.getElementById('idmonth').innerText = month;
+  renderHistogram();
 });
 
 
 map.on('moveend', function(e) {
-    var features = map.queryRenderedFeatures({layers:['unclustered-point']});
-
-    if (features) {
-        var uniqueFeatures = getUniqueFeatures(features, "risk_score");
-        // Populate features for the listing overlay.
-        renderListings(uniqueFeatures);
-
-        // Clear the input container
-        filterEl.value = '';
-
-        // Store the current features in sn `airports` variable to
-        // later use for filtering on `keyup`.
-        airports = uniqueFeatures;
-
-        // Create array of probabilities
-        risk_scoreArr = airports.map(function(element) {
-          return element.properties.risk_score;
-        });
-
-        var x = risk_scoreArr;
-
-        var trace = {
-          x: x,
-          type: 'histogram',
-          marker: {
-            color: "rgba(255, 100, 102, 0.7)",
-          },
-          opacity: 0.5,
-          xbins: {
-            start: 0,
-            end: 1,
-            size: 0.05
-          },
-        };
-
-
-        var data = [trace];
-        //var data = [trace, trace_thresholdline];
-
-        var layout = {
-          barmode: "overlay",
-          xaxis: {title: "Score"},
-          yaxis: {title: "Count"},
-          showlegend: false,
-          shapes: [
-               {
-                   type: 'line',
-                   xref: 'paper',
-                   x0: 0.65,
-                   y0: 0,
-                   x1: 0.65,
-                   y1: 10, // myDiv.layout.yaxis.range[1],
-                   line:{
-                       color: 'rgba(72,9,104, 0.8)',
-                       width: 1,
-                       dash:'dot'
-                   }
-                 }
-               ]
-        };
-        //Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
-        var myplot = Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
-            myplot.then(function(plot) {
-              var layout_update = { 'shapes[0].y1': plot.layout.yaxis.range[1] };
-              Plotly.update('myDiv', {}, layout_update);
-              //console.log(plot.layout.yaxis.range[1]);
-            });
-            myplot;
-
-
-    }
+    renderHistogram();
 });
 
+function renderHistogram () {
+  var features = map.queryRenderedFeatures({layers:['unclustered-point']});
+  console.log(features);
+
+  if (features) {
+      var uniqueFeatures = features;
+      // Populate features for the listing overlay.
+      renderListings(uniqueFeatures);
+
+      // Clear the input container
+      filterEl.value = '';
+
+      // Store the current features in sn `airports` variable to
+      // later use for filtering on `keyup`.
+      airports = uniqueFeatures;
+      console.log(airports);
+      // Create array of probabilities
+      risk_scoreArr = airports.map(function(element) {
+        return element.properties.risk_score;
+      });
+
+      var x = risk_scoreArr;
+      console.log(x);
+
+      var trace = {
+        x: x,
+        type: 'histogram',
+        marker: {
+          color: "rgba(255, 100, 102, 0.7)",
+        },
+        opacity: 0.5,
+        xbins: {
+          start: 0,
+          end: 1,
+          size: 0.05
+        },
+      };
+
+
+      var data = [trace];
+      //var data = [trace, trace_thresholdline];
+
+      var layout = {
+        barmode: "overlay",
+        xaxis: {title: "Score"},
+        yaxis: {title: "Count"},
+        showlegend: false,
+        shapes: [
+             {
+                 type: 'line',
+                 xref: 'paper',
+                 x0: 0.65,
+                 y0: 0,
+                 x1: 0.65,
+                 y1: 10, // myDiv.layout.yaxis.range[1],
+                 line:{
+                     color: 'rgba(72,9,104, 0.8)',
+                     width: 1,
+                     dash:'dot'
+                 }
+               }
+             ]
+      };
+      //Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+      var myplot = Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+          myplot.then(function(plot) {
+            var layout_update = { 'shapes[0].y1': plot.layout.yaxis.range[1] };
+            Plotly.update('myDiv', {}, layout_update);
+            //console.log(plot.layout.yaxis.range[1]);
+          });
+          myplot;
+
+
+  }
+}
 
 filterEl.addEventListener('keyup', function(e) {
     var value = normalize(e.target.value);
