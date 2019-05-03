@@ -28,10 +28,33 @@
         <ul class="navbar-nav mr-auto">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="#" style= 'color: #ffff'>How to Use this App</a>
+              <!-- Button trigger modal -->
+              <button type="button" class="nav-link" data-toggle="modal" data-target="#exampleModal" style= 'color: #ffff; background: #480968; border-color: #480968 !important'>
+                How to Use This App
+              </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">How to Use This Application</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      ...
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style= 'color: #ffff'>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style= 'color: #ffff;'>
               Learn More
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
