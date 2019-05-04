@@ -30,7 +30,7 @@
             <li class="nav-item">
               <!-- Button trigger modal -->
               <button type="button" class="nav-link" data-toggle="modal" data-target="#exampleModal" style= 'color: #ffff; background: #480968; border-color: #480968 !important'>
-                How to Use This App
+                About This App
               </button>
 
               <!-- Modal -->
@@ -38,13 +38,19 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">How to Use This Application</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">About This Application</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
                     <div class="modal-body">
-                      ...
+                      This application was produced as part of the University of Pennsylvania’s Master of Urban Spatial Analytics Spring 2018 Practicum (MUSA 801).
+                      This interactive tool was created for the Philadelphia Department of Licenses and Inspections (L&I) and serves as a decision making tool to help the L&I proactively prioritze where to conduct house inspections in order to stymy illegal rentals before they turn into illegal evictions.
+                      <br><br>
+                      This tool currently covers the neighborhood of Grays Ferry, showing all possible non-owner occupied rental units. Each property is colored accoring to its risk score, indicating its likelihood of being rented illegally.
+                      Drag the sliders to filter parcels based on their risk scores and last date of inspection.
+                      Click on a parcel to see more information about the unit, such as housing characteristics, legal history and violation history.
+                      The histogram below auto populates based on the current map view and this serves to better visualize where clusters of high risk scores are. This allows inspectors to more efficiently prioritize not only individual units but also entire neighborhoods or areas.
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
